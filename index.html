@@ -1,210 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Model Canvas Presentation</title>
+    <title>WETO Business Model Canvas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* General Styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        /* Custom scrollbar to keep internal card scrolling sleek */
+        ::-webkit-scrollbar {
+            width: 4px;
         }
 
-        /* Canvas Main Container */
-        #canvas-container {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: auto auto auto auto;
-            gap: 15px;
-            width: 95%;
-            max-width: 1300px;
-            padding: 30px;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
 
-        /* Common Section Styles */
-        .bmc-box {
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-            background-color: #fafafa;
-            display: flex;
-            flex-direction: column;
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
         }
 
-        .bmc-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            background-color: #fff;
-        }
-
-        .bmc-box h2 {
-            margin-top: 0;
-            font-size: 1.1rem;
-            padding-bottom: 10px;
-            border-bottom: 2px solid;
-        }
-
-        .bmc-box ul {
-            padding-left: 20px;
-            margin: 10px 0 0 0;
-            list-style-type: disc;
-            color: #555;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        /* Color Coding mapped to your image */
-        .partners-box { grid-area: 1 / 1 / 3 / 2; border-top: 8px solid #6c94a4; }
-        .activities-box { grid-area: 1 / 2 / 2 / 3; border-top: 8px solid #66a58f; }
-        .resources-box { grid-area: 2 / 2 / 3 / 3; border-top: 8px solid #66a58f; }
-        .propositions-box { grid-area: 1 / 3 / 3 / 4; border-top: 8px solid #e8b87c; background-color: #fcf4e8;}
-        .relationships-box { grid-area: 1 / 4 / 2 / 5; border-top: 8px solid #8e7cc3; }
-        .channels-box { grid-area: 2 / 4 / 3 / 5; border-top: 8px solid #8e7cc3; }
-        .segments-box { grid-area: 1 / 5 / 3 / 6; border-top: 8px solid #8e7cc3; }
-        .costs-box { grid-area: 3 / 1 / 4 / 4; border-top: 8px solid #9ba5b0; }
-        .revenue-box { grid-area: 3 / 4 / 4 / 6; border-top: 8px solid #759c77; }
-
-        .bmc-box h2 { border-color: transparent; }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Prevent body scroll */
-            background-color: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal.show {
-            display: block;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background-color: #f5f6fa;
-            margin: 5% auto;
-            border-radius: 12px;
-            width: 85%;
-            max-width: 900px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-        }
-
-        .modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            padding: 20px 30px;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close {
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .close:hover {
-            color: #ddd;
-        }
-
-        .modal-body {
-            padding: 30px;
-            overflow-y: auto;
-            color: #333;
-        }
-
-        .modal-body h3 {
-            font-size: 1.2rem;
-            color: #222;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-        }
-
-        .modal-body h3:first-child {
-            margin-top: 0;
-        }
-
-        .modal-body ul {
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-size: 1.05rem;
-        }
-
-        .modal-body li {
-            margin-bottom: 8px;
-        }
-
-        /* Modal Header Colors */
-        #modal-partners .modal-header { background-color: #6c94a4; }
-        #modal-activities .modal-header { background-color: #66a58f; }
-        #modal-resources .modal-header { background-color: #66a58f; }
-        #modal-propositions .modal-header { background-color: #df9e47; }
-        #modal-relationships .modal-header { background-color: #8e7cc3; }
-        #modal-channels .modal-header { background-color: #8e7cc3; }
-        #modal-segments .modal-header { background-color: #8e7cc3; }
-        #modal-costs .modal-header { background-color: #9ba5b0; }
-        #modal-revenue .modal-header { background-color: #759c77; }
-
-        /* Responsive Design */
-        @media (max-width: 1000px) {
-            #canvas-container {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: auto;
-            }
-            .bmc-box {
-                grid-area: auto !important;
-            }
-        }
-        @media (max-width: 600px) {
-            #canvas-container {
-                grid-template-columns: 1fr;
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body>
 
-    <div id="canvas-container">
-        
-        <div class="bmc-box partners-box" onclick="openModal('partners')">
-            <h2>Key Partners</h2>
-            <ul>
+<body class="bg-slate-100 h-screen w-screen overflow-hidden flex items-center justify-center font-sans relative">
+
+    <div id="canvas-container"
+        class="w-[96vw] h-[96vh] max-w-[1600px] p-4 lg:p-6 bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white z-10 flex flex-col lg:grid lg:grid-cols-5 lg:grid-rows-[auto_1fr_1fr_1fr] gap-4 overflow-y-auto lg:overflow-hidden">
+
+        <div
+            class="col-span-1 lg:col-span-5 flex flex-col md:flex-row justify-between items-start md:items-end pb-2 border-b border-gray-200">
+            <div>
+                <h1 class="text-3xl font-black text-gray-800 tracking-tight">WETO Business Model</h1>
+                <p class="text-gray-500 font-medium mt-1">Interactive Canvas Overview</p>
+            </div>
+            <button onclick="startPresentation()"
+                class="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2">
+                <span class="text-xl">▶</span> Start Presentation
+            </button>
+        </div>
+
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-1 lg:row-span-2 flex flex-col group overflow-y-auto"
+            onclick="openModal('partners')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-blue-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">🤝</span> Key Partners
+            </h2>
+            <ul class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-blue-500">
                 <li>Who are the key partners</li>
                 <li>Who are the key suppliers</li>
                 <li>Which key resources are we acquiring from our partners?</li>
@@ -212,109 +61,159 @@
             </ul>
         </div>
 
-        <div class="bmc-box activities-box" onclick="openModal('activities')">
-            <h2>Key Activities</h2>
-            <ul>
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-1 flex flex-col group overflow-y-auto"
+            onclick="openModal('activities')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-teal-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">⚡</span> Key Activities
+            </h2>
+            <ul class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-teal-500">
                 <li>What key activities do the following require?</li>
                 <li>Our value propositions</li>
                 <li>Our distribution channels</li>
-                <li>Our customer relationships</li>
                 <li>Our revenue streams</li>
             </ul>
         </div>
 
-        <div class="bmc-box resources-box" onclick="openModal('resources')">
-            <h2>Key Resources</h2>
-            <ul>
-                <li>What key resources do the following require?</li>
-                <li>Our value propositions</li>
-                <li>Our distribution channels</li>
-                <li>Our customer relationships</li>
-                <li>Our revenue streams</li>
-            </ul>
-        </div>
-
-        <div class="bmc-box propositions-box" onclick="openModal('propositions')">
-            <h2>Value Propositions</h2>
-            <ul>
+        <div class="relative bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-1 lg:row-span-2 flex flex-col group overflow-y-auto"
+            onclick="openModal('propositions')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-orange-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-orange-900 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-gradient-to-r from-orange-50 to-orange-50 z-10 pb-1">
+                <span class="text-xl">🎁</span> Propositions
+            </h2>
+            <ul class="list-disc pl-5 space-y-1.5 text-sm text-orange-800/80 font-medium marker:text-orange-500">
                 <li>What value do we deliver to the customer?</li>
                 <li>Which one of our customer's problems are we helping to solve?</li>
-                <li>What bundles of products and services are we offering to each segment?</li>
-                <li>Which customer needs are we satisfying?</li>
+                <li>What bundles of products and services are we offering?</li>
                 <li>What is the minimum viable product?</li>
             </ul>
         </div>
 
-        <div class="bmc-box relationships-box" onclick="openModal('relationships')">
-            <h2>Customer Relationships</h2>
-            <ul>
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-1 flex flex-col group overflow-y-auto"
+            onclick="openModal('relationships')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-purple-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">💬</span> Relationships
+            </h2>
+            <ul class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-purple-500">
                 <li>How do we get, keep, and grow customers?</li>
-                <li>Which customer relationships have we with the rest of our business model</li>
                 <li>How costly are they?</li>
             </ul>
         </div>
 
-        <div class="bmc-box channels-box" onclick="openModal('channels')">
-            <h2>Channels</h2>
-            <ul>
-                <li>Through which channels do our customer segments want to be reached?</li>
-                <li>How do other companies reach them now?</li>
-                <li>Which ones work best?</li>
-                <li>Which ones are most cost-efficient?</li>
-                <li>How are we integrating</li>
-            </ul>
-        </div>
-
-        <div class="bmc-box segments-box" onclick="openModal('segments')">
-            <h2>Customer Segments</h2>
-            <ul>
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-1 lg:row-span-2 flex flex-col group overflow-y-auto"
+            onclick="openModal('segments')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-purple-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">🎯</span> Segments
+            </h2>
+            <ul class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-purple-500">
                 <li>From whom are we creating value?</li>
                 <li>Who are our most important customers?</li>
                 <li>What are the customer archetypes?</li>
             </ul>
         </div>
 
-        <div class="bmc-box costs-box" onclick="openModal('costs')">
-            <h2>Cost Structure</h2>
-            <ul>
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-1 flex flex-col group overflow-y-auto"
+            onclick="openModal('resources')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-teal-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">💎</span> Key Resources
+            </h2>
+            <ul class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-teal-500">
+                <li>What key resources do the following require?</li>
+                <li>Our value propositions</li>
+                <li>Our distribution channels</li>
+            </ul>
+        </div>
+
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-1 flex flex-col group overflow-y-auto"
+            onclick="openModal('channels')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-purple-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">🚀</span> Channels
+            </h2>
+            <ul class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-purple-500">
+                <li>Through which channels do our customer segments want to be reached?</li>
+                <li>Which ones work best?</li>
+            </ul>
+        </div>
+
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-3 flex flex-col group overflow-y-auto"
+            onclick="openModal('costs')">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">📉</span> Cost Structure
+            </h2>
+            <ul
+                class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-slate-500 md:columns-2 gap-6">
                 <li>What are the important costs inherent to our business model?</li>
                 <li>Which key resources are the most expensive?</li>
                 <li>Which key activities are the most expensive?</li>
             </ul>
         </div>
 
-        <div class="bmc-box revenue-box" onclick="openModal('revenue')">
-            <h2>Revenue Streams</h2>
-            <ul>
+        <div class="relative bg-white border border-gray-100 rounded-2xl p-4 lg:p-5 cursor-pointer hover:shadow-xl transition-all duration-300 lg:col-span-2 flex flex-col group overflow-y-auto"
+            onclick="openModal('revenue')">
+            <div
+                class="absolute top-0 left-0 w-full h-1.5 bg-emerald-500 group-hover:h-2.5 transition-all duration-300">
+            </div>
+            <h2
+                class="font-bold text-lg text-gray-800 mb-2 mt-1 flex items-center gap-2 sticky top-0 bg-white z-10 pb-1">
+                <span class="text-xl">📈</span> Revenue Streams
+            </h2>
+            <ul
+                class="list-disc pl-5 space-y-1.5 text-sm text-gray-600 font-medium marker:text-emerald-500 md:columns-2 gap-4">
                 <li>For what value are our customers willing to pay?</li>
-                <li>For what do they currently pay?</li>
                 <li>What is the revenue model?</li>
                 <li>What are the pricing tactics?</li>
             </ul>
         </div>
-
     </div>
 
-    <div id="modal-partners" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Key Partners
-                <span class="close" onclick="closeModal('partners')">&times;</span>
+
+    <div id="modal-partners"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'partners')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-blue-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">🤝</span> Key Partners
+                </h2>
+                <button onclick="closeModal('partners')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>Who are the key partners</h3>
-                <ul>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-blue-900">Who are the key partners
+                </h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-blue-500">
                     <li><strong>n8n</strong> and <strong>Shopify</strong></li>
                 </ul>
-                <h3>Which key resources are we acquiring from our partners?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-blue-900">Which key resources are
+                    we acquiring from our partners?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-blue-500 space-y-1">
                     <li>Integrated E-Commerce Platform</li>
                     <li>Secure Payment Processing</li>
                     <li>Automated Workflow Controller</li>
                     <li>Live Data Synchronization</li>
                 </ul>
-                <h3>Which key activities do partners perform?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-blue-900">Which key activities do
+                    partners perform?</h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-blue-500 space-y-1">
                     <li>Automating the Purchasing Process</li>
                     <li>System Monitoring</li>
                 </ul>
@@ -322,33 +221,46 @@
         </div>
     </div>
 
-    <div id="modal-activities" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Key Activities
-                <span class="close" onclick="closeModal('activities')">&times;</span>
+    <div id="modal-activities"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'activities')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-teal-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">⚡</span> Key Activities
+                </h2>
+                <button onclick="closeModal('activities')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>What key activities do the following require?</h3>
-                <ul>
-                    <li>Automatically detects when items are used removed from the container using an active weight-based tracking system.</li>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-teal-900">What key activities do
+                    the following require?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-teal-500 space-y-1">
+                    <li>Automatically detects when items are used removed from the container using an active
+                        weight-based tracking system.</li>
                     <li>Automatically records all transactions and exports the data to Excel.</li>
                     <li>Triggers notifications or draft orders via n8n when stock reaches a critical minimum.</li>
                 </ul>
-                <h3>Our value propositions</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-teal-900">Our value propositions
+                </h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-teal-500 space-y-1">
                     <li>Removes the need for manual scanning by actively tracking physical products through weight.</li>
                     <li>Removes the risks of miscalculated stock levels or forgotten entries.</li>
-                    <li>Prevents lost sales by ensuring best-selling products remain in stock through real-time monitoring and low-stock alerts.</li>
+                    <li>Prevents lost sales by ensuring best-selling products remain in stock through real-time
+                        monitoring and low-stock alerts.</li>
                     <li>Makes accounting easier by providing reports on monthly profit and inventory usage.</li>
                 </ul>
-                <h3>Our distribution channels</h3>
-                <ul>
-                    <li>Allows online stock monitoring for our esteemed customers, using an ESP32 module for data synchronization.</li>
-                    <li>Connects directly with trusted digital marketplaces via Shopify to make automated inventory management efficient.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-teal-900">Our distribution channels
+                </h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-teal-500 space-y-1">
+                    <li>Allows online stock monitoring for our esteemed customers, using an ESP32 module for data
+                        synchronization.</li>
+                    <li>Connects directly with trusted digital marketplaces via Shopify to make automated inventory
+                        management efficient.</li>
                 </ul>
-                <h3>Our customer relationships</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-teal-900">Our customer
+                    relationships</h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-teal-500 space-y-1">
                     <li>Actively notifies the customer whenever stock reaches a critical minimum threshold.</li>
                     <li>Constant Monitoring</li>
                 </ul>
@@ -356,59 +268,78 @@
         </div>
     </div>
 
-    <div id="modal-resources" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Key Resources
-                <span class="close" onclick="closeModal('resources')">&times;</span>
+    <div id="modal-resources"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'resources')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-teal-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">💎</span> Key Resources
+                </h2>
+                <button onclick="closeModal('resources')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>What key resources do the following require?</h3>
-                <ul>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-teal-900">What key resources do the
+                    following require?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-teal-500 space-y-1">
                     <li>Hardware components (ESP32 modules, Load cells, HX711 amplifiers)</li>
                 </ul>
-                <h3>Our value propositions</h3>
-                <ul>
-                    <li>The Wi-Fi modules (ESP32) and reliable cloud hosting needed to keep the online dashboard live and securely connected to supplier marketplaces.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-teal-900">Our value propositions
+                </h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-teal-500 space-y-1">
+                    <li>The Wi-Fi modules (ESP32) and reliable cloud hosting needed to keep the online dashboard live
+                        and securely connected to supplier marketplaces.</li>
                     <li>Internet Connection</li>
                     <li>Software Application</li>
                     <li>Sensors</li>
                 </ul>
-                <h3>Our distribution channels</h3>
-                <ul>
-                    <li>Automation tools and APIs (like n8n or Shopify) are required to build the direct, seamless connections to digital supplier marketplaces.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-teal-900">Our distribution channels
+                </h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-teal-500 space-y-1">
+                    <li>Automation tools and APIs (like n8n or Shopify) are required to build the direct, seamless
+                        connections to digital supplier marketplaces.</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div id="modal-propositions" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Value Propositions
-                <span class="close" onclick="closeModal('propositions')">&times;</span>
+    <div id="modal-propositions"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'propositions')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-orange-500 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">🎁</span> Value
+                    Propositions</h2>
+                <button onclick="closeModal('propositions')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>What value do we deliver to the customer?</h3>
-                <ul>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-orange-900">What value do we
+                    deliver to the customer?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-orange-500 space-y-1">
                     <li>Real-Time Automation Update</li>
                     <li>Input-Free Management</li>
                 </ul>
-                <h3>Which one of our customer's problems are we helping to solve?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-orange-900">Which one of our
+                    customer's problems are we helping to solve?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-orange-500 space-y-1">
                     <li>Accidental or incorrect entry of data</li>
                     <li>Inaccurate stock counts</li>
                     <li>Input-Free Management</li>
                 </ul>
-                <h3>What bundles of products and services are we offering to each segment?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-orange-900">What bundles of
+                    products and services are we offering to each segment?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-orange-500 space-y-1">
                     <li>Cloud Inventory Tracker</li>
                     <li>Automated Digital Ledger</li>
                     <li>IoT Smart Equipment</li>
                     <li>System Dashboard</li>
                 </ul>
-                <h3>Which customer needs are we satisfying?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-orange-900">Which customer needs
+                    are we satisfying?</h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-orange-500 space-y-1">
                     <li>Reliability</li>
                     <li>Simplicity</li>
                     <li>IoT Smart Equipment</li>
@@ -417,83 +348,122 @@
         </div>
     </div>
 
-    <div id="modal-relationships" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Customer Relationships
-                <span class="close" onclick="closeModal('relationships')">&times;</span>
+    <div id="modal-relationships"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'relationships')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-purple-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">💬</span> Customer
+                    Relationships</h2>
+                <button onclick="closeModal('relationships')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>How do we get, keep, and grow customers?</h3>
-                <ul>
-                    <li>We maintain trust through a reliable web-based interface and automated alerts that ensure business owners never miss a sale.</li>
-                    <li>We scale with our clients by offering hardware IoT kits and automation features as their business expands</li>
-                    <li>We attract users by demonstrating how an "input-free" system solves the headache of manual data entry and stockouts.</li>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">How do we get, keep,
+                    and grow customers?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-purple-500 space-y-1">
+                    <li>We maintain trust through a reliable web-based interface and automated alerts that ensure
+                        business owners never miss a sale.</li>
+                    <li>We scale with our clients by offering hardware IoT kits and automation features as their
+                        business expands</li>
+                    <li>We attract users by demonstrating how an "input-free" system solves the headache of manual data
+                        entry and stockouts.</li>
                 </ul>
-                <h3>Which customer relationships have we with the rest of our business model</h3>
-                <ul>
-                    <li>We provide direct support during the initial setup and configuration to ensure the system integrates smoothly with the client's current workflow.</li>
-                    <li>We provide a user-friendly dashboard that allows business owners to access and manage their own data independently at any time.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">Which customer
+                    relationships have we with the rest of our business model</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-purple-500 space-y-1">
+                    <li>We provide direct support during the initial setup and configuration to ensure the system
+                        integrates smoothly with the client's current workflow.</li>
+                    <li>We provide a user-friendly dashboard that allows business owners to access and manage their own
+                        data independently at any time.</li>
                 </ul>
-                <h3>How costly are they?</h3>
-                <ul>
-                    <li><strong>Setup Phase</strong> is our most resource-heavy phase, involving a one-time fee for physical installation, hardware configuration, and integrating the system into the client's current workflow</li>
-                    <li><strong>Support</strong> are the ongoing costs that are tied to maintaining the web-based interface and ensuring the ESP32 modules stay synced with the cloud</li>
-                    <li>As a customer "grows," costs are associated with providing additional IoT equipment or expanding their API integrations (like Shopify or n8n) to handle more inventory</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">How costly are they?
+                </h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-purple-500 space-y-1">
+                    <li><strong>Setup Phase</strong> is our most resource-heavy phase, involving a one-time fee for
+                        physical installation, hardware configuration, and integrating the system into the client's
+                        current workflow</li>
+                    <li><strong>Support</strong> are the ongoing costs that are tied to maintaining the web-based
+                        interface and ensuring the ESP32 modules stay synced with the cloud</li>
+                    <li>As a customer "grows," costs are associated with providing additional IoT equipment or expanding
+                        their API integrations (like Shopify or n8n) to handle more inventory</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div id="modal-channels" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Channels
-                <span class="close" onclick="closeModal('channels')">&times;</span>
+    <div id="modal-channels"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'channels')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-purple-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">🚀</span> Channels</h2>
+                <button onclick="closeModal('channels')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>Through which channels do our customer segments want to be reached?</h3>
-                <ul>
-                    <li>Business owners need a remote, 24/7 digital dashboard to monitor stock levels without being physically present at the store.</li>
-                    <li>Email notifications are preferred for urgent updates, such as low-stock warnings or daily profit reports.</li>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">Through which channels
+                    do our customer segments want to be reached?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-purple-500 space-y-1">
+                    <li>Business owners need a remote, 24/7 digital dashboard to monitor stock levels without being
+                        physically present at the store.</li>
+                    <li>Email notifications are preferred for urgent updates, such as low-stock warnings or daily profit
+                        reports.</li>
                 </ul>
-                <h3>How do other companies reach them now?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">How do other companies
+                    reach them now?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-purple-500 space-y-1">
                     <li>Traditional suppliers often rely on physical visits or phone calls to take reorders.</li>
-                    <li>Software companies typically use email marketing and in-app notifications for standard inventory management software.</li>
+                    <li>Software companies typically use email marketing and in-app notifications for standard inventory
+                        management software.</li>
                 </ul>
-                <h3>Which ones work best?</h3>
-                <ul>
-                    <li>Showing the "weight-based" automation in real-time is the most effective way to build trust with non-technical business owners.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">Which ones work best?
+                </h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-purple-500 space-y-1">
+                    <li>Showing the "weight-based" automation in real-time is the most effective way to build trust with
+                        non-technical business owners.</li>
                 </ul>
-                <h3>Which ones are most cost-efficient?</h3>
-                <ul>
-                    <li>Using the ESP32 module for data transmission is much cheaper than manual auditing or hiring staff for data entry.</li>
-                    <li>Providing a web interface reduces the need for constant customer support calls, as owners can check their own data anytime.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">Which ones are most
+                    cost-efficient?</h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-purple-500 space-y-1">
+                    <li>Using the ESP32 module for data transmission is much cheaper than manual auditing or hiring
+                        staff for data entry.</li>
+                    <li>Providing a web interface reduces the need for constant customer support calls, as owners can
+                        check their own data anytime.</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div id="modal-segments" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Customer Segments
-                <span class="close" onclick="closeModal('segments')">&times;</span>
+    <div id="modal-segments"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'segments')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-purple-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">🎯</span> Customer
+                    Segments</h2>
+                <button onclick="closeModal('segments')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>From whom are we creating value?</h3>
-                <ul>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">From whom are we
+                    creating value?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-purple-500 space-y-1">
                     <li>Micro and Small Enterprises (SME)</li>
                     <li>Non-Technical Business Owners</li>
                 </ul>
-                <h3>Who are our most important customers?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">Who are our most
+                    important customers?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-purple-500 space-y-1">
                     <li>Micro and Small Enterprises (SME)</li>
                     <li>Businesses that relies on automated inventory management</li>
                 </ul>
-                <h3>What are the customer archetypes?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-purple-900">What are the customer
+                    archetypes?</h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-purple-500 space-y-1">
                     <li>The Quality Connoisseur</li>
                     <li>The Pragmatic User</li>
                     <li>Eco-Conscious Customer</li>
@@ -502,93 +472,349 @@
         </div>
     </div>
 
-    <div id="modal-costs" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Cost Structure
-                <span class="close" onclick="closeModal('costs')">&times;</span>
+    <div id="modal-costs"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'costs')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-slate-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">📉</span> Cost Structure
+                </h2>
+                <button onclick="closeModal('costs')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>What are the important costs inherent to our business model?</h3>
-                <ul>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-slate-700">What are the important
+                    costs inherent to our business model?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-slate-500 space-y-1">
                     <li>Buying the main components like the ESP32 boards, load cells, and HX711 amplifiers.</li>
-                    <li>Small recurring costs for cloud hosting or any automation tools (like n8n) that keep the data syncing 24/7.</li>
+                    <li>Small recurring costs for cloud hosting or any automation tools (like n8n) that keep the data
+                        syncing 24/7.</li>
                 </ul>
-                <h3>Which key resources are the most expensive?</h3>
-                <ul>
-                    <li>The ESP32 microcontrollers are the "brains" of the operation, they are more powerful than basic boards and handle all our Wi-Fi processing.</li>
-                    <li>High-quality load cells and HX711 modules that ensure the weight readings are accurate every time.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-slate-700">Which key resources are
+                    the most expensive?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-slate-500 space-y-1">
+                    <li>The ESP32 microcontrollers are the "brains" of the operation, they are more powerful than basic
+                        boards and handle all our Wi-Fi processing.</li>
+                    <li>High-quality load cells and HX711 modules that ensure the weight readings are accurate every
+                        time.</li>
                 </ul>
-                <h3>Which key activities are the most expensive?</h3>
-                <ul>
-                    <li>Every shop is different, so the initial labor of mounting the hardware and tweaking the code for each client is a major resource draw.</li>
-                    <li>Making sure the ESP32 communicates perfectly with the web ledger and stays connected without dropping out.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-slate-700">Which key activities are
+                    the most expensive?</h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-slate-500 space-y-1">
+                    <li>Every shop is different, so the initial labor of mounting the hardware and tweaking the code for
+                        each client is a major resource draw.</li>
+                    <li>Making sure the ESP32 communicates perfectly with the web ledger and stays connected without
+                        dropping out.</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div id="modal-revenue" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Revenue Streams
-                <span class="close" onclick="closeModal('revenue')">&times;</span>
+    <div id="modal-revenue"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 items-center justify-center opacity-0 transition-opacity duration-300 w-full h-full"
+        onclick="closeModalOnOutsideClick(event, 'revenue')">
+        <div class="bg-white rounded-2xl w-11/12 max-w-3xl max-h-[80vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
+            <div class="bg-emerald-600 text-white px-8 py-5 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-3"><span class="text-3xl">📈</span> Revenue Streams
+                </h2>
+                <button onclick="closeModal('revenue')"
+                    class="text-white/70 hover:text-white text-4xl leading-none transition-colors">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>For what value are our customers willing to pay?</h3>
-                <ul>
+            <div class="p-8 overflow-y-auto text-gray-800">
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-emerald-900">For what value are our
+                    customers willing to pay?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-emerald-500 space-y-1">
                     <li>Automation & Convenience</li>
                     <li>Accuracy & Reliability</li>
                     <li>Operational Time Savings</li>
                 </ul>
-                <h3>For what do they currently pay?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-emerald-900">For what do they
+                    currently pay?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-emerald-500 space-y-1">
                     <li>Micro and Small Enterprises (SME)</li>
                     <li>Non-Technical Business Owners</li>
                 </ul>
-                <h3>What is the revenue model?</h3>
-                <ul>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-emerald-900">What is the revenue
+                    model?</h3>
+                <ul class="list-disc pl-5 mb-8 text-gray-600 marker:text-emerald-500 space-y-1">
                     <li>Revenue from the initial sale of the IoT equipments (ESP32) and others (Load cells/HX711).</li>
-                    <li>A one-time service charge for the on-site installation, calibration, and integration of the hardware into the client's shop.</li>
+                    <li>A one-time service charge for the on-site installation, calibration, and integration of the
+                        hardware into the client's shop.</li>
                 </ul>
-                <h3>What are the pricing tactics?</h3>
-                <ul>
-                    <li>The customer pays a single, larger upfront fee to own the hardware (ESP32 kits) and the perpetual license to use the software.</li>
-                    <li>Offering fixed-term contracts (e.g., 1-year or 2-year terms) that bundle the hardware, software access, and maintenance into an agreement.</li>
+                <h3 class="font-bold text-lg border-b border-gray-100 pb-2 mb-3 text-emerald-900">What are the pricing
+                    tactics?</h3>
+                <ul class="list-disc pl-5 text-gray-600 marker:text-emerald-500 space-y-1">
+                    <li>The customer pays a single, larger upfront fee to own the hardware (ESP32 kits) and the
+                        perpetual license to use the software.</li>
+                    <li>Offering fixed-term contracts (e.g., 1-year or 2-year terms) that bundle the hardware, software
+                        access, and maintenance into an agreement.</li>
                 </ul>
             </div>
         </div>
     </div>
 
+
+    <div id="presentation-overlay"
+        class="fixed inset-0 bg-black z-[100] hidden flex-col items-center justify-center text-white w-full h-full cursor-default">
+
+        <button onclick="closePresentation()"
+            class="absolute top-6 right-8 text-white/50 hover:text-white text-5xl font-light z-50 transition-colors">&times;</button>
+
+        <div id="slide-1"
+            class="absolute inset-0 flex flex-col md:flex-row items-center justify-center p-12 hidden opacity-0 transition-opacity duration-500">
+            <div class="text-left w-full md:w-1/2 space-y-4">
+                <h1 class="text-6xl md:text-8xl font-bold text-white tracking-wide">Start with</h1>
+                <h1 class="text-6xl md:text-8xl font-bold text-[#00ff88] tracking-wide">WETO</h1>
+            </div>
+            <div class="text-left w-full md:w-1/2 mt-12 md:mt-0 pt-20">
+                <h2 class="text-4xl md:text-6xl font-medium text-white">Hardware meets</h2>
+                <h2 class="text-4xl md:text-6xl font-medium text-white">Web</h2>
+            </div>
+        </div>
+
+        <div id="slide-2"
+            class="absolute inset-0 flex flex-col items-center justify-center p-12 hidden opacity-0 transition-opacity duration-500">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-16 tracking-widest uppercase">Our Competitors</h1>
+
+            <div class="flex flex-col md:flex-row gap-8 w-full max-w-5xl justify-center items-center">
+                <button onclick="showGraphView('xero')"
+                    class="w-64 h-32 bg-[#2ba3c9] hover:bg-[#238bb0] rounded-2xl flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer border border-[#2ba3c9]/50">
+                    <span
+                        class="text-white text-3xl font-bold tracking-wide border-2 border-white rounded-full px-6 py-2">xero</span>
+                </button>
+
+                <button onclick="showGraphView('odoo')"
+                    class="w-64 h-32 bg-[#954a8a] hover:bg-[#7a3c71] rounded-2xl flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer border border-[#954a8a]/50">
+                    <span class="text-white text-5xl font-bold tracking-tight">odoo</span>
+                </button>
+
+                <button onclick="showGraphView('square')"
+                    class="w-64 h-32 bg-white hover:bg-gray-100 rounded-2xl flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer">
+                    <div class="flex items-center gap-2 text-black">
+                        <div class="w-6 h-6 border-4 border-black rounded-sm"></div>
+                        <span class="text-2xl font-bold tracking-tight">Square</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div id="slide-3"
+            class="absolute inset-0 flex flex-col items-center justify-center p-8 hidden opacity-0 transition-opacity duration-500 bg-black">
+
+            <button onclick="goBackToCompetitors()"
+                class="absolute top-8 left-8 bg-white/10 hover:bg-white/20 border border-white/30 text-white px-6 py-3 rounded-full flex items-center gap-2 transition-all cursor-pointer z-50">
+                <span>&larr;</span> Back to Competitors
+            </button>
+
+            <div class="flex flex-col md:flex-row w-full max-w-7xl h-[70vh] items-center justify-center mt-12 gap-8">
+                <div id="errc-content" class="w-full md:w-1/3 text-white overflow-y-auto pr-4">
+                </div>
+
+                <div class="w-full md:w-2/3 h-full relative flex flex-col">
+                    <div class="flex-grow relative">
+                        <canvas id="competitorChart"></canvas>
+                    </div>
+                    <div id="chart-legend"
+                        class="mt-8 w-full flex justify-center gap-16 font-bold text-3xl tracking-wider">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <script>
+        // --- BMC Modal Logic ---
         function openModal(id) {
-            var modal = document.getElementById('modal-' + id);
-            modal.style.display = 'block';
-            setTimeout(function() {
-                modal.classList.add('show');
-            }, 10);
-            document.body.style.overflow = 'hidden'; // Stop background scrolling
+            const modal = document.getElementById('modal-' + id);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.add('opacity-100');
+                    modal.querySelector('.bg-white').classList.remove('scale-95');
+                    modal.querySelector('.bg-white').classList.add('scale-100');
+                }, 10);
+            }
         }
 
         function closeModal(id) {
-            var modal = document.getElementById('modal-' + id);
-            modal.classList.remove('show');
-            setTimeout(function() {
-                modal.style.display = 'none';
-            }, 300); // Wait for the transition to finish
-            document.body.style.overflow = 'auto'; // Restore scrolling
-        }
-
-        // Close modal when clicking outside of the content
-        window.onclick = function(event) {
-            var modals = document.getElementsByClassName('modal');
-            for (var i = 0; i < modals.length; i++) {
-                if (event.target == modals[i]) {
-                    closeModal(modals[i].id.replace('modal-', ''));
-                }
+            const modal = document.getElementById('modal-' + id);
+            if (modal) {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                modal.querySelector('.bg-white').classList.remove('scale-100');
+                modal.querySelector('.bg-white').classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                }, 300);
             }
         }
-    </script>
 
+        function closeModalOnOutsideClick(event, id) {
+            if (event.target === event.currentTarget) {
+                closeModal(id);
+            }
+        }
+
+        // --- Presentation & Chart Logic ---
+        let presentationTimer;
+        let chartInstance = null;
+
+        const chartData = {
+            xero: {
+                labels: ['Design', 'Functionality', 'Quality', 'Service', 'Customers', 'Price'],
+                weto: [9, 10, 8, 9, 9, 9],
+                comp: [8, 7, 9, 6, 5, 8],
+                compName: 'XERO',
+                compColor: '#ff8a8a',
+                errc: `
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">E</span>LIMINATE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Manual Data Entry</li><li>Human Recording Errors</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">R</span>EDUCE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Inventory Audit</li><li>Minimizes the risk of stockout</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">R</span>AISE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Inventory Accuracy</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">C</span>REATE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Input-Free Workflow</li><li>Automated Stock Reordering</li></ul></div>
+                `
+            },
+            odoo: {
+                labels: ['Quality', 'Price', 'Design', 'Service', 'Customers', 'Branches'],
+                weto: [9, 10, 9, 8, 8, 7],
+                comp: [8, 8, 9, 7, 8, 10],
+                compName: 'ODOO',
+                compColor: '#ff8a8a',
+                errc: `
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">E</span>LIMINATE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Manual Data Entry</li><li>Barcode Scanning</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">R</span>EDUCE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Complexity and Training</li><li>Human Errors</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">R</span>AISE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Inventory Accuracy</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">C</span>REATE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Input-Free Workflow</li><li>Automated Stock Reordering</li></ul></div>
+                `
+            },
+            square: {
+                labels: ['Quality', 'Price', 'Design', 'Service', 'Customers', 'Branch'],
+                weto: [8, 9, 9, 10, 10, 10],
+                comp: [9, 6, 8, 5, 7, 8],
+                compName: 'SQUAREUP',
+                compColor: '#ff8a8a',
+                errc: `
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">E</span>LIMINATE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Barcode Scanning</li><li>Transaction Transaction Fees</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">R</span>EDUCE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Complexity and Training</li><li>Human Errors</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">R</span>AISE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Inventory Accuracy</li><li>Decision Speed</li></ul></div>
+                    <div class="mb-6"><div class="font-bold text-2xl tracking-wide flex items-center gap-1"><span class="text-red-500 font-black">C</span>REATE</div><ul class="list-disc pl-8 font-bold text-xl mt-2 leading-relaxed"><li>Input-Free Workflow</li><li>Automated Stock Reordering</li></ul></div>
+                `
+            }
+        };
+
+        function startPresentation() {
+            const overlay = document.getElementById('presentation-overlay');
+            const slide1 = document.getElementById('slide-1');
+            const slide2 = document.getElementById('slide-2');
+            const slide3 = document.getElementById('slide-3');
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            slide2.classList.add('hidden', 'opacity-0');
+            slide3.classList.add('hidden', 'opacity-0');
+
+            slide1.classList.remove('hidden');
+            setTimeout(() => slide1.classList.remove('opacity-0'), 50);
+
+            presentationTimer = setTimeout(() => {
+                slide1.classList.add('opacity-0');
+                setTimeout(() => {
+                    slide1.classList.add('hidden');
+                    slide2.classList.remove('hidden');
+                    setTimeout(() => slide2.classList.remove('opacity-0'), 50);
+                }, 500);
+            }, 3000);
+        }
+
+        function showGraphView(competitorKey) {
+            clearTimeout(presentationTimer);
+            const slide2 = document.getElementById('slide-2');
+            const slide3 = document.getElementById('slide-3');
+
+            const data = chartData[competitorKey];
+            document.getElementById('errc-content').innerHTML = data.errc;
+            document.getElementById('chart-legend').innerHTML = `<span class="text-[#8a9fff]">WETO</span> <span style="color:${data.compColor}">${data.compName}</span>`;
+
+            const ctx = document.getElementById('competitorChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'WETO',
+                            data: data.weto,
+                            borderColor: '#8a9fff',
+                            backgroundColor: '#8a9fff',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointRadius: 4,
+                            tension: 0
+                        },
+                        {
+                            label: data.compName,
+                            data: data.comp,
+                            borderColor: data.compColor,
+                            backgroundColor: data.compColor,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointRadius: 4,
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    color: '#fff',
+                    scales: {
+                        y: { min: 0, max: 10, grid: { color: '#333', borderDash: [5, 5] }, ticks: { color: '#fff', font: { size: 14, weight: 'bold' } } },
+                        x: { grid: { color: '#333', borderDash: [5, 5] }, ticks: { color: '#fff', font: { size: 14, weight: 'bold' } } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            slide2.classList.add('opacity-0');
+            setTimeout(() => {
+                slide2.classList.add('hidden');
+                slide3.classList.remove('hidden');
+                setTimeout(() => slide3.classList.remove('opacity-0'), 50);
+            }, 500);
+        }
+
+        function goBackToCompetitors() {
+            const slide2 = document.getElementById('slide-2');
+            const slide3 = document.getElementById('slide-3');
+
+            slide3.classList.add('opacity-0');
+            setTimeout(() => {
+                slide3.classList.add('hidden');
+                slide2.classList.remove('hidden');
+                setTimeout(() => slide2.classList.remove('opacity-0'), 50);
+            }, 500);
+        }
+
+        function closePresentation() {
+            clearTimeout(presentationTimer);
+            const overlay = document.getElementById('presentation-overlay');
+
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.classList.remove('flex');
+                overlay.classList.add('hidden');
+                overlay.classList.remove('opacity-0');
+            }, 500);
+        }
+    </script>
 </body>
+
 </html>
